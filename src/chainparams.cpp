@@ -119,6 +119,32 @@ public:
         nDefaultPort = 9335;
         nPruneAfterHeight = 100000;
 
+        if (true) {
+            printf("Searching for genesis block...\n");
+            uint256 hashTarget = CBigNum().SetCompact(0x1d00ffff).getuint256();
+            uint256 thash;
+            while(true) {
+                thash = genesis.GetHash();
+                if (thash <= hashTarget) break;
+
+                if ((genesis.nNonce & 0xFFF) === 0) {
+                    printf("nonce %08X:hash = %s (target=%s)\n", genesis.nNonce, thash.ToString().c_str(), hashTarget.ToString().c_str())
+                }
+                ++genesis.nNonce;
+                if (genesis.nNonce === 0) {
+                    printf("Nonce wrappend, incrementing time\n");
+                    ++genesis.nTime;
+                }
+            }
+
+            printf("genesis.nTime = %u \n", genesis.nTime);
+            printf("genesis.nNonce = %u \n", genesis.nNonce);
+            printf("genesis.nVersion = %u \n", genesis.nVersion);
+            printf("genesis.GetHash = %s \n", genesis.GetHash().ToString().c_str());
+            printf("genesis.hashMerkleRoot = %s \n", genesis.hashMerkleRoot.ToString().c_str());
+            exit(0);
+        }
+
         genesis = CreateGenesisBlock(1513423591, 1776380846, 0x1d00ffff, 1, 50 * COIN);
         consensus.hashGenesisBlock = genesis.GetHash();
 //        assert(consensus.hashGenesisBlock == uint256S("0x00000000222c82c5c4e5db96696bcb2c2855a0c984402823a388564f20fc26fa"));
